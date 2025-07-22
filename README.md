@@ -235,7 +235,7 @@ tables = await client.call_tool("list_tables", {
 
 1. **Fork and Clone:**
    ```bash
-   git clone https://github.com/your-username/airtable-mcp-server-oauth.git
+   git clone https://github.com/onimsha/airtable-mcp-server-oauth.git
    cd airtable-mcp-server-oauth
    ```
 
@@ -292,22 +292,40 @@ uv run pytest tests/test_tools.py
 ### Project Structure
 
 ```
-src/airtable_mcp/
-├── __init__.py          # Package initialization
-├── main.py              # Entry point and CLI
-├── server.py            # MCP server implementation
-├── oauth/               # OAuth authentication
-│   ├── __init__.py
-│   ├── client.py        # OAuth client implementation
-│   └── storage.py       # Token storage
-├── tools/               # MCP tools implementation
-│   ├── __init__.py
-│   ├── base_ops.py      # Base operations
-│   └── record_ops.py    # Record operations
-└── utils/               # Utility functions
-    ├── __init__.py
-    ├── config.py        # Configuration management
-    └── logging.py       # Logging setup
+src/
+├── airtable_mcp/           # Main MCP server package
+│   ├── __init__.py         # Package initialization
+│   ├── __main__.py         # Module entry point
+│   ├── main.py             # CLI and application entry
+│   ├── api/                # Airtable API client
+│   │   ├── __init__.py
+│   │   ├── client.py       # HTTP client for Airtable API
+│   │   ├── exceptions.py   # API-specific exceptions
+│   │   └── models.py       # Pydantic models for API responses
+│   └── mcp/                # MCP server implementation
+│       ├── __init__.py
+│       ├── schemas.py      # MCP tool schemas
+│       └── server.py       # FastMCP server with tools
+└── mcp_oauth_lib/          # Reusable OAuth library
+    ├── __init__.py         # Library initialization
+    ├── auth/               # Authentication components
+    │   ├── __init__.py
+    │   ├── context.py      # Auth context management
+    │   ├── middleware.py   # OAuth middleware
+    │   └── utils.py        # Auth utilities
+    ├── core/               # Core OAuth functionality
+    │   ├── __init__.py
+    │   ├── config.py       # OAuth configuration
+    │   ├── flow.py         # OAuth flow implementation
+    │   └── server.py       # OAuth server endpoints
+    ├── providers/          # OAuth provider implementations
+    │   ├── __init__.py
+    │   ├── airtable.py     # Airtable OAuth provider
+    │   └── base.py         # Base provider interface
+    └── utils/              # OAuth utilities
+        ├── __init__.py
+        ├── pkce.py         # PKCE implementation
+        └── state.py        # State management
 ```
 
 ## ⚙️ Configuration

@@ -4,45 +4,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from airtable_mcp.oauth.handler import AirtableOAuthHandler
-
 
 @pytest.fixture
-def oauth_handler():
-    """Create an OAuth handler instance for testing."""
-    return AirtableOAuthHandler(
-        client_id="test_client_id",
-        client_secret="test_client_secret",
-        redirect_uri="http://localhost:8000/oauth/callback",
-        scope="data.records:read data.records:write",
-    )
-
-
-@pytest.fixture
-def oauth_handler_with_tokens():
-    """Create an OAuth handler with tokens for testing."""
-    handler = AirtableOAuthHandler(
-        client_id="test_client_id",
-        client_secret="test_client_secret",
-        redirect_uri="http://localhost:8000/oauth/callback",
-        scope="data.records:read data.records:write",
-    )
-    handler.access_token = "test_access_token"
-    handler.refresh_token = "test_refresh_token"
-    handler.expires_at = 9999999999  # Far future
-    return handler
-
-
-@pytest.fixture
-def mock_firestore_client():
-    """Create a mock Firestore client."""
+def mock_oauth_client():
+    """Create a mock OAuth client for testing."""
     mock_client = MagicMock()
-    mock_collection = MagicMock()
-    mock_document = MagicMock()
-
-    mock_client.collection.return_value = mock_collection
-    mock_collection.document.return_value = mock_document
-
+    mock_client.access_token = "test_access_token"
+    mock_client.refresh_token = "test_refresh_token"
+    mock_client.expires_at = 9999999999  # Far future
     return mock_client
 
 
@@ -57,5 +26,23 @@ def mock_httpx_response():
         "refresh_token": "new_refresh_token",
         "expires_in": 3600,
         "token_type": "Bearer",
+    }
+    return mock_response
+
+
+@pytest.fixture
+def mock_airtable_response():
+    """Create a mock Airtable API response."""
+    mock_response = MagicMock()
+    mock_response.is_success = True
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "records": [
+            {
+                "id": "rec123",
+                "fields": {"Name": "Test Record", "Value": 42},
+                "createdTime": "2025-01-01T00:00:00.000Z",
+            }
+        ]
     }
     return mock_response
