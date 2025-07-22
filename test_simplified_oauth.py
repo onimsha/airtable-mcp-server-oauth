@@ -10,35 +10,38 @@ async def test_simplified_oauth():
     """Test the simplified OAuth implementation."""
     print("🚀 Testing Simplified Airtable OAuth MCP Server")
     print("=" * 50)
-    
+
     # Create server
     server = create_server()
     print("✅ Server created successfully")
-    
+
     # Test available tools
     print("\n🔧 Testing available tools...")
     try:
         tools = await server.mcp.get_tools()
         print(f"✅ Found {len(tools)} total tools")
-        
+
         print("Available tools:")
         for tool_name in tools:
             print(f"  - {tool_name}")
-        
+
     except Exception as e:
         print(f"❌ Tools listing error: {e}")
-    
+
     # Test tool with fake token
     print("\n🧪 Testing tool with access token parameter...")
     try:
         # Try to get a tool to see its schema
-        list_bases_tool = await server.mcp.get_tool('list_bases')
+        list_bases_tool = await server.mcp.get_tool("list_bases")
         print("✅ list_bases tool found")
-        print("Tool schema includes access_token:", 'access_token' in str(list_bases_tool.schema))
-        
+        print(
+            "Tool schema includes access_token:",
+            "access_token" in str(list_bases_tool.schema),
+        )
+
     except Exception as e:
         print(f"❌ Tool schema error: {e}")
-    
+
     print("\n🎉 Simplified OAuth Implementation Summary:")
     print("=" * 50)
     print("✅ Removed OAuth resources and MCP tools")

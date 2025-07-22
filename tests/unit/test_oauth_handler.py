@@ -4,10 +4,10 @@ import time
 import urllib.parse
 from unittest.mock import AsyncMock, patch
 
-import pytest
 import httpx
+import pytest
 
-from airtable_mcp.oauth.handler import AirtableOAuthHandler, AUTHORIZE_URL, TOKEN_URL
+from airtable_mcp.oauth.handler import TOKEN_URL, AirtableOAuthHandler
 
 
 class TestAirtableOAuthHandler:
@@ -20,7 +20,7 @@ class TestAirtableOAuthHandler:
             client_secret="test_secret",
             redirect_uri="http://localhost:8000/callback",
         )
-        
+
         assert handler.client_id == "test_id"
         assert handler.client_secret == "test_secret"
         assert handler.redirect_uri == "http://localhost:8000/callback"
@@ -32,15 +32,15 @@ class TestAirtableOAuthHandler:
         """Test authorization URL generation."""
         state = "test_state_123"
         url = oauth_handler.get_authorization_url(state)
-        
+
         # Parse the URL to verify components
         parsed = urllib.parse.urlparse(url)
         query_params = urllib.parse.parse_qs(parsed.query)
-        
+
         assert parsed.scheme == "https"
         assert parsed.netloc == "airtable.com"
         assert parsed.path == "/oauth2/v1/authorize"
-        
+
         assert query_params["client_id"][0] == "test_client_id"
         assert query_params["redirect_uri"][0] == "http://localhost:8000/oauth/callback"
         assert query_params["response_type"][0] == "code"
@@ -71,7 +71,9 @@ class TestAirtableOAuthHandler:
     def test_is_token_expired_soon_to_expire(self, oauth_handler):
         """Test token expiry check with token expiring soon."""
         oauth_handler.access_token = "test_token"
-        oauth_handler.expires_at = time.time() + 200  # 200 seconds from now (less than 5 min margin)
+        oauth_handler.expires_at = (
+            time.time() + 200
+        )  # 200 seconds from now (less than 5 min margin)
         assert oauth_handler.is_token_expired is True
 
     def test_get_auth_headers_no_token(self, oauth_handler):
@@ -85,20 +87,22 @@ class TestAirtableOAuthHandler:
         assert headers == {"Authorization": "Bearer test_access_token"}
 
     @pytest.mark.asyncio
-    async def test_exchange_code_for_tokens_success(self, oauth_handler, mock_httpx_response):
+    async def test_exchange_code_for_tokens_success(
+        self, oauth_handler, mock_httpx_response
+    ):
         """Test successful token exchange."""
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
             mock_context.post.return_value = mock_httpx_response
-            
+
             result = await oauth_handler.exchange_code_for_tokens("test_code")
-            
+
             assert result is True
             assert oauth_handler.access_token == "new_access_token"
             assert oauth_handler.refresh_token == "new_refresh_token"
             assert oauth_handler.expires_at is not None
-            
+
             # Verify the request was made correctly
             mock_context.post.assert_called_once_with(
                 TOKEN_URL,
@@ -108,7 +112,7 @@ class TestAirtableOAuthHandler:
                     "client_secret": "test_client_secret",
                     "redirect_uri": "http://localhost:8000/oauth/callback",
                     "code": "test_code",
-                }
+                },
             )
 
     @pytest.mark.asyncio
@@ -117,16 +121,16 @@ class TestAirtableOAuthHandler:
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
-            
+
             # Mock failed response
             mock_response = AsyncMock()
             mock_response.is_success = False
             mock_response.status_code = 400
             mock_response.text = "Bad Request"
             mock_context.post.return_value = mock_response
-            
+
             result = await oauth_handler.exchange_code_for_tokens("test_code")
-            
+
             assert result is False
             assert oauth_handler.access_token is None
             assert oauth_handler.refresh_token is None
@@ -137,15 +141,15 @@ class TestAirtableOAuthHandler:
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
-            
+
             # Mock response without access token
             mock_response = AsyncMock()
             mock_response.is_success = True
             mock_response.json.return_value = {"refresh_token": "token"}
             mock_context.post.return_value = mock_response
-            
+
             result = await oauth_handler.exchange_code_for_tokens("test_code")
-            
+
             assert result is False
 
     @pytest.mark.asyncio
@@ -154,15 +158,15 @@ class TestAirtableOAuthHandler:
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
-            
+
             # Mock response without refresh token
             mock_response = AsyncMock()
             mock_response.is_success = True
             mock_response.json.return_value = {"access_token": "token"}
             mock_context.post.return_value = mock_response
-            
+
             result = await oauth_handler.exchange_code_for_tokens("test_code")
-            
+
             assert result is False
 
     @pytest.mark.asyncio
@@ -172,25 +176,27 @@ class TestAirtableOAuthHandler:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
             mock_context.post.side_effect = httpx.RequestError("Network error")
-            
+
             result = await oauth_handler.exchange_code_for_tokens("test_code")
-            
+
             assert result is False
 
     @pytest.mark.asyncio
-    async def test_refresh_access_token_success(self, oauth_handler_with_tokens, mock_httpx_response):
+    async def test_refresh_access_token_success(
+        self, oauth_handler_with_tokens, mock_httpx_response
+    ):
         """Test successful token refresh."""
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
             mock_context.post.return_value = mock_httpx_response
-            
+
             result = await oauth_handler_with_tokens.refresh_access_token()
-            
+
             assert result is True
             assert oauth_handler_with_tokens.access_token == "new_access_token"
             assert oauth_handler_with_tokens.refresh_token == "new_refresh_token"
-            
+
             # Verify the request was made correctly
             mock_context.post.assert_called_once_with(
                 TOKEN_URL,
@@ -199,7 +205,7 @@ class TestAirtableOAuthHandler:
                     "client_id": "test_client_id",
                     "client_secret": "test_client_secret",
                     "refresh_token": "test_refresh_token",
-                }
+                },
             )
 
     @pytest.mark.asyncio
@@ -214,14 +220,14 @@ class TestAirtableOAuthHandler:
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
-            
+
             # Mock failed response
             mock_response = AsyncMock()
             mock_response.is_success = False
             mock_response.status_code = 401
             mock_response.text = "Unauthorized"
             mock_context.post.return_value = mock_response
-            
+
             result = await oauth_handler_with_tokens.refresh_access_token()
             assert result is False
 
@@ -232,7 +238,7 @@ class TestAirtableOAuthHandler:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
             mock_context.post.side_effect = httpx.RequestError("Network error")
-            
+
             result = await oauth_handler_with_tokens.refresh_access_token()
             assert result is False
 
@@ -243,16 +249,18 @@ class TestAirtableOAuthHandler:
         assert result is True
 
     @pytest.mark.asyncio
-    async def test_ensure_valid_token_needs_refresh(self, oauth_handler_with_tokens, mock_httpx_response):
+    async def test_ensure_valid_token_needs_refresh(
+        self, oauth_handler_with_tokens, mock_httpx_response
+    ):
         """Test ensure valid token that needs refresh."""
         # Make token expired
         oauth_handler_with_tokens.expires_at = time.time() - 3600
-        
+
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
             mock_context.post.return_value = mock_httpx_response
-            
+
             result = await oauth_handler_with_tokens.ensure_valid_token()
             assert result is True
 
@@ -261,17 +269,17 @@ class TestAirtableOAuthHandler:
         """Test ensure valid token when refresh fails."""
         # Make token expired
         oauth_handler_with_tokens.expires_at = time.time() - 3600
-        
+
         with patch("httpx.AsyncClient") as mock_client:
             mock_context = AsyncMock()
             mock_client.return_value.__aenter__.return_value = mock_context
-            
+
             # Mock failed refresh
             mock_response = AsyncMock()
             mock_response.is_success = False
             mock_response.status_code = 401
             mock_response.text = "Unauthorized"
             mock_context.post.return_value = mock_response
-            
+
             result = await oauth_handler_with_tokens.ensure_valid_token()
             assert result is False

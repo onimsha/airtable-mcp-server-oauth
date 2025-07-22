@@ -1,7 +1,7 @@
 """Core OAuth functionality."""
 
-from .server import MCPOAuthServer
 from .config import OAuthConfig, ProviderConfig
 from .flow import OAuthFlow
+from .server import MCPOAuthServer
 
 __all__ = ["MCPOAuthServer", "OAuthConfig", "ProviderConfig", "OAuthFlow"]

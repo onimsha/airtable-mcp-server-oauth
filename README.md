@@ -16,7 +16,6 @@ A production-ready **Model Context Protocol (MCP) server** for Airtable with sec
 - **🔄 Dual Transport** - Support for both STDIO and HTTP transport protocols
 
 ### Security & Reliability
-- **🛡️ Secure Token Storage** - Encrypted token storage with configurable backends
 - **🔑 Environment-based Configuration** - Secure credential management
 - **✅ Type Safety** - Full type hints and validation with Pydantic
 - **🧪 Comprehensive Testing** - Unit tests with pytest and coverage reporting
@@ -76,18 +75,26 @@ PORT=8000
 LOG_LEVEL="INFO"
 ```
 
-### 4. OAuth Authentication Setup
+### 4. Testing with MCP Inspector
 
-Run the OAuth setup script to authenticate:
+Use the official MCP Inspector to test and interact with your server:
 
-```bash
-uv run python scripts/oauth_setup.py
-```
+1. **Start the server:**
+   ```bash
+   uv run python -m airtable_mcp http
+   ```
 
-This will:
-- Open authorization URL in your browser
-- Guide you through the OAuth flow
-- Save your tokens securely
+2. **Open MCP Inspector:**
+   Visit [https://modelcontextprotocol.io/docs/tools/inspector](https://modelcontextprotocol.io/docs/tools/inspector)
+
+3. **Connect to your server:**
+   - Select "HTTP Streaming" transport
+   - Enter the URL: `http://localhost:8000/mcp`
+   - Click "Connect"
+
+4. **Authenticate with Airtable:**
+   - The server will guide you through OAuth authentication
+   - Use the inspector to test available MCP tools
 
 ### 5. Run the Server
 
@@ -150,7 +157,7 @@ All tools now use **typed parameters** instead of generic `args`, making them mo
 ```python
 # List all records in a table
 records = await client.call_tool("list_records", {
-    "base_id": "appXXXXXXXXXXXXXX", 
+    "base_id": "appXXXXXXXXXXXXXX",
     "table_id": "tblYYYYYYYYYYYYYY"
 })
 
@@ -267,7 +274,7 @@ pre-commit install
 The project includes comprehensive test coverage:
 
 - **Unit Tests:** Test individual components and functions
-- **Integration Tests:** Test OAuth flow and Airtable API interactions  
+- **Integration Tests:** Test OAuth flow and Airtable API interactions
 - **Coverage Reports:** Ensure >90% code coverage
 
 ```bash
@@ -309,7 +316,7 @@ All configuration is handled through environment variables (loaded from `.env`):
 
 ### Required Variables
 - `AIRTABLE_CLIENT_ID` - OAuth client ID from Airtable
-- `AIRTABLE_CLIENT_SECRET` - OAuth client secret  
+- `AIRTABLE_CLIENT_SECRET` - OAuth client secret
 - `AIRTABLE_REDIRECT_URI` - OAuth callback URL
 
 ### Optional Variables

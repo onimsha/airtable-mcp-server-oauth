@@ -1,7 +1,8 @@
 """Pytest configuration and shared fixtures."""
 
+from unittest.mock import MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock
 
 from airtable_mcp.oauth.handler import AirtableOAuthHandler
 
@@ -38,10 +39,10 @@ def mock_firestore_client():
     mock_client = MagicMock()
     mock_collection = MagicMock()
     mock_document = MagicMock()
-    
+
     mock_client.collection.return_value = mock_collection
     mock_collection.document.return_value = mock_document
-    
+
     return mock_client
 
 
@@ -55,6 +56,6 @@ def mock_httpx_response():
         "access_token": "new_access_token",
         "refresh_token": "new_refresh_token",
         "expires_in": 3600,
-        "token_type": "Bearer"
+        "token_type": "Bearer",
     }
     return mock_response

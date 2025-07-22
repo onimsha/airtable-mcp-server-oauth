@@ -11,16 +11,16 @@ This library provides:
 - Authentication middleware for FastMCP
 """
 
-from .core.server import MCPOAuthServer
+from .auth.context import AuthContext
+from .auth.middleware import OAuthAuthenticationMiddleware
 from .core.config import OAuthConfig, ProviderConfig
 from .core.flow import OAuthFlow
-from .auth.middleware import OAuthAuthenticationMiddleware
-from .auth.context import AuthContext
+from .core.server import MCPOAuthServer
 
 __version__ = "0.1.0"
 __all__ = [
     "MCPOAuthServer",
-    "OAuthConfig", 
+    "OAuthConfig",
     "ProviderConfig",
     "OAuthFlow",
     "OAuthAuthenticationMiddleware",

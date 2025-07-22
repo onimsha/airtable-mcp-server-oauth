@@ -19,19 +19,19 @@ This document specifies all the methods that the Python Airtable API Client (`Ai
 ## Base Operations
 
 ### 1. List Bases
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `list_bases()`  
-**Description**: List all Airtable bases accessible to the authenticated user  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `list_bases()`
+**Description**: List all Airtable bases accessible to the authenticated user
 **TypeScript Reference**: `listBases()` in `airtableService.ts:64-66`
 
 ```python
 async def list_bases() -> Dict[str, Any]:
     """List all accessible Airtable bases
-    
+
     Returns:
         Dict containing bases array with id, name, and permissionLevel for each base
-        
+
     Example Response:
         {
             "bases": [
@@ -45,29 +45,29 @@ async def list_bases() -> Dict[str, Any]:
     """
 ```
 
-**Endpoint**: `GET /v0/meta/bases`  
-**Authentication**: Bearer token required  
+**Endpoint**: `GET /v0/meta/bases`
+**Authentication**: Bearer token required
 **Rate Limits**: Standard Airtable limits apply
 
 ---
 
 ### 2. Get Base Schema
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `get_base_schema(base_id: str)`  
-**Description**: Get schema information for a specific base including tables, fields, and views  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `get_base_schema(base_id: str)`
+**Description**: Get schema information for a specific base including tables, fields, and views
 **TypeScript Reference**: `getBaseSchema(baseId)` in `airtableService.ts:68-70`
 
 ```python
 async def get_base_schema(base_id: str) -> Dict[str, Any]:
     """Get schema information for a specific base
-    
+
     Args:
         base_id: The Airtable base ID (e.g., "appABC123")
-        
+
     Returns:
         Dict containing tables array with full schema information
-        
+
     Example Response:
         {
             "tables": [
@@ -84,8 +84,8 @@ async def get_base_schema(base_id: str) -> Dict[str, Any]:
     """
 ```
 
-**Endpoint**: `GET /v0/meta/bases/{base_id}/tables`  
-**Authentication**: Bearer token required  
+**Endpoint**: `GET /v0/meta/bases/{base_id}/tables`
+**Authentication**: Bearer token required
 **Rate Limits**: Standard Airtable limits apply
 
 ---
@@ -93,10 +93,10 @@ async def get_base_schema(base_id: str) -> Dict[str, Any]:
 ## Record Operations
 
 ### 3. List Records
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `list_records(base_id, table_id, ...options)`  
-**Description**: List records from a table with filtering, sorting, and pagination  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `list_records(base_id, table_id, ...options)`
+**Description**: List records from a table with filtering, sorting, and pagination
 **TypeScript Reference**: `listRecords(baseId, tableId, options)` in `airtableService.ts:72-107`
 
 ```python
@@ -111,7 +111,7 @@ async def list_records(
     filter_by_formula: Optional[str] = None
 ) -> Dict[str, Any]:
     """List records from a table
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID or name
@@ -121,13 +121,13 @@ async def list_records(
         page_size: Number of records per page (for pagination)
         sort: List of sort specifications [{"field": "Name", "direction": "asc"}]
         filter_by_formula: Airtable formula to filter records
-        
+
     Returns:
         Dict containing records array and optional offset for pagination
     """
 ```
 
-**Endpoint**: `GET /v0/{base_id}/{table_id}`  
+**Endpoint**: `GET /v0/{base_id}/{table_id}`
 **Features** (TypeScript Implementation):
 - ✅ View filtering
 - ✅ Field selection
@@ -142,21 +142,21 @@ async def list_records(
 ---
 
 ### 4. Get Record
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `get_record(base_id, table_id, record_id)`  
-**Description**: Get a specific record by ID  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `get_record(base_id, table_id, record_id)`
+**Description**: Get a specific record by ID
 **TypeScript Reference**: `getRecord(baseId, tableId, recordId)` in `airtableService.ts:109-114`
 
 ```python
 async def get_record(base_id: str, table_id: str, record_id: str) -> Dict[str, Any]:
     """Get a specific record
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID or name
         record_id: The specific record ID
-        
+
     Returns:
         Dict containing record data with id and fields
     """
@@ -167,10 +167,10 @@ async def get_record(base_id: str, table_id: str, record_id: str) -> Dict[str, A
 ---
 
 ### 5. Create Records
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `create_records(base_id, table_id, records, typecast)`  
-**Description**: Create one or more records in a table  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `create_records(base_id, table_id, records, typecast)`
+**Description**: Create one or more records in a table
 **TypeScript Reference**: `createRecord(baseId, tableId, fields)` in `airtableService.ts:116-125` (single record)
 
 ```python
@@ -181,19 +181,19 @@ async def create_records(
     typecast: bool = False
 ) -> Dict[str, Any]:
     """Create one or more records
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID or name
         records: List of record data to create (max 10 per request)
         typecast: Whether to automatically convert field types
-        
+
     Returns:
         Dict containing created records array
     """
 ```
 
-**Endpoint**: `POST /v0/{base_id}/{table_id}`  
+**Endpoint**: `POST /v0/{base_id}/{table_id}`
 **Features** (TypeScript Implementation):
 - ✅ Batch creation (up to 10 records)
 - ✅ Typecast support
@@ -204,10 +204,10 @@ async def create_records(
 ---
 
 ### 6. Update Records
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `update_records(base_id, table_id, records, typecast)`  
-**Description**: Update one or more records in a table  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `update_records(base_id, table_id, records, typecast)`
+**Description**: Update one or more records in a table
 **TypeScript Reference**: `updateRecords(baseId, tableId, records)` in `airtableService.ts:127-141`
 
 ```python
@@ -218,19 +218,19 @@ async def update_records(
     typecast: bool = False
 ) -> Dict[str, Any]:
     """Update one or more records
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID or name
         records: List of record updates (must include id and fields)
         typecast: Whether to automatically convert field types
-        
+
     Returns:
         Dict containing updated records array
     """
 ```
 
-**Endpoint**: `PATCH /v0/{base_id}/{table_id}`  
+**Endpoint**: `PATCH /v0/{base_id}/{table_id}`
 **Features** (TypeScript Implementation):
 - ✅ Batch updates (up to 10 records)
 - ✅ Partial field updates
@@ -241,10 +241,10 @@ async def update_records(
 ---
 
 ### 7. Delete Records
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `delete_records(base_id, table_id, record_ids)`  
-**Description**: Delete one or more records from a table  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `delete_records(base_id, table_id, record_ids)`
+**Description**: Delete one or more records from a table
 **TypeScript Reference**: `deleteRecords(baseId, tableId, recordIds)` in `airtableService.ts:143-153`
 
 ```python
@@ -254,18 +254,18 @@ async def delete_records(
     record_ids: List[str]
 ) -> Dict[str, Any]:
     """Delete one or more records
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID or name
         record_ids: List of record IDs to delete (max 10 per request)
-        
+
     Returns:
         Dict containing deleted records with id and deleted status
     """
 ```
 
-**Endpoint**: `DELETE /v0/{base_id}/{table_id}?records[]={id1}&records[]={id2}`  
+**Endpoint**: `DELETE /v0/{base_id}/{table_id}?records[]={id1}&records[]={id2}`
 **Features** (TypeScript Implementation):
 - ✅ Batch deletion (up to 10 records)
 - ✅ Proper URL encoding
@@ -275,10 +275,10 @@ async def delete_records(
 ---
 
 ### 8. Search Records
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `search_records(base_id, table_id, search_term, ...options)`  
-**Description**: Search for records containing specific text in text-based fields  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `search_records(base_id, table_id, search_term, ...options)`
+**Description**: Search for records containing specific text in text-based fields
 **TypeScript Reference**: `searchRecords(baseId, tableId, searchTerm, fieldIds?, maxRecords?, view?)` in `airtableService.ts:250-272`
 
 ```python
@@ -291,7 +291,7 @@ async def search_records(
     view: Optional[str] = None
 ) -> Dict[str, Any]:
     """Search for records containing specific text in specified fields
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID or name
@@ -299,7 +299,7 @@ async def search_records(
         field_ids: Specific field IDs to search in (optional)
         max_records: Maximum number of records to return
         view: Specific view to search within
-        
+
     Returns:
         Dict containing matching records
     """
@@ -325,10 +325,10 @@ async def search_records(
 ## Table Operations
 
 ### 9. Create Table
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `create_table(base_id, name, fields, description)`  
-**Description**: Create a new table in a base  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `create_table(base_id, name, fields, description)`
+**Description**: Create a new table in a base
 **TypeScript Reference**: `createTable(baseId, name, fields, description?)` in `airtableService.ts:155-164`
 
 ```python
@@ -339,19 +339,19 @@ async def create_table(
     description: Optional[str] = None
 ) -> Dict[str, Any]:
     """Create a new table in a base
-    
+
     Args:
         base_id: The Airtable base ID
         name: Name for the new table (must be unique in base)
         fields: List of field definitions (at least one required)
         description: Optional description for the table
-        
+
     Returns:
         Dict containing the created table information
     """
 ```
 
-**Endpoint**: `POST /v0/meta/bases/{base_id}/tables`  
+**Endpoint**: `POST /v0/meta/bases/{base_id}/tables`
 **Features** (TypeScript Implementation):
 - ✅ Field definition validation
 - ✅ Primary field requirements
@@ -366,10 +366,10 @@ async def create_table(
 ---
 
 ### 10. Update Table
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `update_table(base_id, table_id, name, description)`  
-**Description**: Update a table's name or description  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `update_table(base_id, table_id, name, description)`
+**Description**: Update a table's name or description
 **TypeScript Reference**: `updateTable(baseId, tableId, updates)` in `airtableService.ts:166-179`
 
 ```python
@@ -380,19 +380,19 @@ async def update_table(
     description: Optional[str] = None
 ) -> Dict[str, Any]:
     """Update a table's name or description
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID to update
         name: New name for the table (optional)
         description: New description for the table (optional)
-        
+
     Returns:
         Dict containing the updated table information
     """
 ```
 
-**Endpoint**: `PATCH /v0/meta/bases/{base_id}/tables/{table_id}`  
+**Endpoint**: `PATCH /v0/meta/bases/{base_id}/tables/{table_id}`
 **Features** (TypeScript Implementation):
 - ✅ Partial updates (name only, description only, or both)
 - ✅ Validation for required parameters
@@ -404,10 +404,10 @@ async def update_table(
 ## Field Operations
 
 ### 11. Create Field
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `create_field(base_id, table_id, field)`  
-**Description**: Create a new field in a table  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `create_field(base_id, table_id, field)`
+**Description**: Create a new field in a table
 **TypeScript Reference**: `createField(baseId, tableId, field)` in `airtableService.ts:181-190`
 
 ```python
@@ -417,18 +417,18 @@ async def create_field(
     field: Dict[str, Any]
 ) -> Dict[str, Any]:
     """Create a new field in a table
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID to add the field to
         field: Field definition (type, name, options, etc.)
-        
+
     Returns:
         Dict containing the created field information
     """
 ```
 
-**Endpoint**: `POST /v0/meta/bases/{base_id}/tables/{table_id}/fields`  
+**Endpoint**: `POST /v0/meta/bases/{base_id}/tables/{table_id}/fields`
 **Features** (TypeScript Implementation):
 - ✅ All Airtable field types support
 - ✅ Field options validation
@@ -451,10 +451,10 @@ async def create_field(
 ---
 
 ### 12. Update Field
-**Python Status**: ❌ Not Started  
-**TypeScript Status**: ✅ Reference Available  
-**Method**: `update_field(base_id, table_id, field_id, name, description)`  
-**Description**: Update a field's name or description  
+**Python Status**: ❌ Not Started
+**TypeScript Status**: ✅ Reference Available
+**Method**: `update_field(base_id, table_id, field_id, name, description)`
+**Description**: Update a field's name or description
 **TypeScript Reference**: `updateField(baseId, tableId, fieldId, updates)` in `airtableService.ts:192-206`
 
 ```python
@@ -466,20 +466,20 @@ async def update_field(
     description: Optional[str] = None
 ) -> Dict[str, Any]:
     """Update a field's name or description
-    
+
     Args:
         base_id: The Airtable base ID
         table_id: The table ID containing the field
         field_id: The field ID to update
         name: New name for the field (optional)
         description: New description for the field (optional)
-        
+
     Returns:
         Dict containing the updated field information
     """
 ```
 
-**Endpoint**: `PATCH /v0/meta/bases/{base_id}/tables/{table_id}/fields/{field_id}`  
+**Endpoint**: `PATCH /v0/meta/bases/{base_id}/tables/{table_id}/fields/{field_id}`
 **Features** (TypeScript Implementation):
 - ✅ Partial updates (name only, description only, or both)
 - ✅ Field validation
@@ -496,10 +496,10 @@ All methods implement consistent error handling:
 ```python
 class AirtableError(Exception):
     """Custom exception for Airtable-related errors"""
-    
+
     def __init__(
-        self, 
-        message: str, 
+        self,
+        message: str,
         status_code: Optional[int] = None,
         error_code: Optional[str] = None
     ):

@@ -1,6 +1,6 @@
 """OAuth provider implementations."""
 
-from .base import BaseOAuthProvider
 from .airtable import AirtableOAuthProvider
+from .base import BaseOAuthProvider
 
 __all__ = ["BaseOAuthProvider", "AirtableOAuthProvider"]
