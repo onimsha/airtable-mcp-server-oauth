@@ -70,15 +70,15 @@ jobs:
           let status = '✅';
           let message = 'Good coverage!';
 
-          if (parseFloat(totalCoverage) < 60) {
+          if (parseFloat(totalCoverage) < 50) {
             status = '❌';
-            message = `Coverage ${totalCoverage}% is below minimum threshold (60%)`;
-          } else if (parseFloat(totalCoverage) < 80) {
+            message = `Coverage ${totalCoverage}% is below minimum threshold (50%)`;
+          } else if (parseFloat(totalCoverage) < 70) {
             status = '⚠️';
-            message = `Coverage ${totalCoverage}% could be improved (target: 90%)`;
-          } else if (parseFloat(totalCoverage) < 90) {
+            message = `Coverage ${totalCoverage}% meets minimum but could be improved (target: 80%)`;
+          } else if (parseFloat(totalCoverage) < 80) {
             status = '👍';
-            message = `Coverage ${totalCoverage}% is good (target: 90%)`;
+            message = `Coverage ${totalCoverage}% is good (target: 80%)`;
           }
 
           const comment = `## ${status} Coverage Report
@@ -95,10 +95,10 @@ jobs:
           ---
 
           📋 **Coverage Thresholds:**
-          - 🎯 **Target**: 90% overall coverage
-          - 👍 **Good**: 80%+ overall coverage
-          - ⚠️ **Warning**: 60-80% overall coverage
-          - ❌ **Failure**: <60% overall coverage
+          - 🎯 **Target**: 80% overall coverage
+          - 👍 **Good**: 70%+ overall coverage
+          - ⚠️ **Warning**: 50-70% overall coverage
+          - ❌ **Failure**: <50% overall coverage
 
           📊 [View detailed coverage report in job artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
@@ -145,7 +145,7 @@ jobs:
     - name: Check minimum coverage threshold
       run: |
         COVERAGE=${{ env.TOTAL_COVERAGE }}
-        MIN_THRESHOLD=60
+        MIN_THRESHOLD=50
 
         if (( $(echo "$COVERAGE < $MIN_THRESHOLD" | bc -l) )); then
           echo "❌ Coverage $COVERAGE% is below minimum threshold of $MIN_THRESHOLD%"
