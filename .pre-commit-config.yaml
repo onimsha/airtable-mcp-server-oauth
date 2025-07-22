@@ -21,7 +21,7 @@ repos:
     hooks:
       - id: mypy
         args: [--strict]
-        exclude: ^tests/
+        exclude: ^(tests/|src/)
         additional_dependencies:
           - types-requests
           - fastapi
