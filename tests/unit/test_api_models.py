@@ -134,18 +134,20 @@ class TestAirtableTable:
 
     def test_table_creation_full(self):
         """Test creating full table info."""
+        from airtable_mcp.api.models import AirtableField
+
+        field = AirtableField(id="fld123", name="Primary Field", type="singleLineText")
+
         table = AirtableTable(
             id="tbl123",
             name="Test Table",
             primaryFieldId="fld123",
-            fields=[
-                {"id": "fld123", "name": "Primary Field", "type": "singleLineText"}
-            ],
+            fields=[field],
             views=[{"id": "viw123", "name": "Grid view", "type": "grid"}],
         )
 
         assert table.id == "tbl123"
         assert len(table.fields) == 1
         assert len(table.views) == 1
-        assert table.fields[0]["name"] == "Primary Field"
+        assert table.fields[0].name == "Primary Field"
         assert table.views[0]["name"] == "Grid view"

@@ -21,8 +21,10 @@ class TestAirtableMCPServer:
     @pytest.fixture
     def server(self, mock_oauth_provider):
         """Create a server instance for testing."""
-        with patch("airtable_mcp.mcp.server.AirtableOAuthProvider"):
-            return AirtableMCPServer(oauth_provider=mock_oauth_provider)
+        server = AirtableMCPServer()
+        # Mock the OAuth provider on the server instance
+        server.oauth_provider = mock_oauth_provider
+        return server
 
     @pytest.mark.asyncio
     async def test_list_bases_success(self, server):

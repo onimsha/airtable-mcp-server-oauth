@@ -17,8 +17,9 @@ class TestAirtableAPIError:
         error = AirtableAPIError("Test error message")
 
         assert str(error) == "Test error message"
+        assert error.message == "Test error message"
         assert error.status_code is None
-        assert error.error_code is None
+        assert error.response_text is None
 
     def test_error_with_status_code(self):
         """Test error with status code."""
@@ -27,22 +28,22 @@ class TestAirtableAPIError:
         assert str(error) == "Test error"
         assert error.status_code == 400
 
-    def test_error_with_error_code(self):
-        """Test error with error code."""
-        error = AirtableAPIError("Test error", error_code="INVALID_REQUEST")
+    def test_error_with_response_text(self):
+        """Test error with response text."""
+        error = AirtableAPIError("Test error", response_text="Invalid request body")
 
         assert str(error) == "Test error"
-        assert error.error_code == "INVALID_REQUEST"
+        assert error.response_text == "Invalid request body"
 
     def test_error_with_all_parameters(self):
         """Test error with all parameters."""
         error = AirtableAPIError(
-            "Test error", status_code=422, error_code="INVALID_REQUEST_BODY"
+            "Test error", status_code=422, response_text="Invalid request body"
         )
 
         assert str(error) == "Test error"
         assert error.status_code == 422
-        assert error.error_code == "INVALID_REQUEST_BODY"
+        assert error.response_text == "Invalid request body"
 
     def test_error_inheritance(self):
         """Test that AirtableAPIError inherits from Exception."""
@@ -61,19 +62,20 @@ class TestAirtableAuthError:
         assert str(error) == "Authentication failed"
         assert isinstance(error, AirtableAPIError)
 
-    def test_auth_error_with_status_code(self):
-        """Test auth error with status code."""
-        error = AirtableAuthError("Invalid token", status_code=401)
+    def test_auth_error_default_status_code(self):
+        """Test auth error has default status code."""
+        error = AirtableAuthError("Invalid token")
 
         assert str(error) == "Invalid token"
         assert error.status_code == 401
 
-    def test_auth_error_with_error_code(self):
-        """Test auth error with error code."""
-        error = AirtableAuthError("Token expired", error_code="TOKEN_EXPIRED")
+    def test_auth_error_inheritance(self):
+        """Test auth error inheritance."""
+        error = AirtableAuthError("Token expired")
 
         assert str(error) == "Token expired"
-        assert error.error_code == "TOKEN_EXPIRED"
+        assert isinstance(error, AirtableAPIError)
+        assert isinstance(error, Exception)
 
 
 class TestAirtableRateLimitError:
@@ -86,22 +88,20 @@ class TestAirtableRateLimitError:
         assert str(error) == "Rate limit exceeded"
         assert isinstance(error, AirtableAPIError)
 
-    def test_rate_limit_error_with_status_code(self):
-        """Test rate limit error with status code."""
-        error = AirtableRateLimitError("Too many requests", status_code=429)
+    def test_rate_limit_error_default_status_code(self):
+        """Test rate limit error has default status code."""
+        error = AirtableRateLimitError("Too many requests")
 
         assert str(error) == "Too many requests"
         assert error.status_code == 429
 
     def test_rate_limit_error_with_retry_after(self):
         """Test rate limit error with retry after."""
-        error = AirtableRateLimitError(
-            "Rate limited", status_code=429, error_code="RATE_LIMITED"
-        )
+        error = AirtableRateLimitError("Rate limited", retry_after=60)
 
         assert str(error) == "Rate limited"
         assert error.status_code == 429
-        assert error.error_code == "RATE_LIMITED"
+        assert error.retry_after == 60
 
 
 class TestExceptionHierarchy:

@@ -24,12 +24,12 @@ airtable-oauth-mcp = "airtable_mcp.main:main"
 
 [dependency-groups]
 dev = [
-    "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
     "pytest-cov>=6.2.1",
     "pytest-mock>=3.14.1",
     "pre-commit>=4.0.1",
     "mypy>=1.13.0",
+    "pytest>=8.4.1",
 ]
 
 [tool.pytest.ini_options]
