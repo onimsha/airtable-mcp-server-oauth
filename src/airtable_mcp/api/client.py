@@ -201,14 +201,18 @@ class AirtableClient:
                     try:
                         response_data = response.json()
                     except Exception as e:
-                        raise AirtableAPIError(f"Failed to parse JSON response: {e}")
+                        raise AirtableAPIError(
+                            f"Failed to parse JSON response: {e}"
+                        ) from e
 
                     # Validate response with Pydantic model if provided
                     if response_model:
                         try:
                             return response_model.model_validate(response_data)
                         except ValidationError as e:
-                            raise AirtableAPIError(f"Response validation error: {e}")
+                            raise AirtableAPIError(
+                                f"Response validation error: {e}"
+                            ) from e
 
                     return response_data
 

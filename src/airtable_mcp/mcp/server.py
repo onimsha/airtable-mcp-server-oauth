@@ -491,7 +491,7 @@ class AirtableMCPServer:
 
         except Exception as e:
             logger.error(f"Failed to create authenticated client: {e}")
-            raise AirtableAuthError(f"Authentication failed: {e}")
+            raise AirtableAuthError(f"Authentication failed: {e}") from e
 
     def run(
         self,
